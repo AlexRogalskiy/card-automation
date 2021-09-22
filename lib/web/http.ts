@@ -73,8 +73,17 @@ export const pusherCustomizer = (express: exp.Express) => {
             team = team.substring(0, team.indexOf("-"));
         }
 
+        let endpoint;
+        if (originHeader.includes(".services")) {
+            logger.info("Using staging endpoint");
+            endpoint = "https://automation-staging.atomist.services/graphql";
+        } else {
+            logger.info("Using production endpoint");
+            endpoint = "https://automation.atomist.com/graphql";
+        }
+
         const graphClient = new ApolloGraphClient(
-            configurationValue<string>("person.url"),
+            endpoint,
             {
                 Authorization: `Bearer ${creds}`,
             });
